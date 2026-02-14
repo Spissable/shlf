@@ -1,0 +1,56 @@
+name: Release
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v6
+      - run: swift build
+      - run: swift test
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - id: semantic
+        uses: cycjimmy/semantic-release-action@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-tap:
+    needs: release
+    if: needs.release.outputs.new_release_published == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Homebrew formula
+        env:
+          TAP_GITHUB_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+          VERSION: ${{ needs.release.outputs.new_release_version }}
+        run: |
+          TARBALL_URL="https://github.com/spissable/shlf/archive/refs/tags/v${VERSION}.tar.gz"
+          SHA256=$(curl -sL "$TARBALL_URL" | shasum -a 256 | cut -d ' ' -f 1)
+
+          git clone https://x-access-token:${TAP_GITHUB_TOKEN}@github.com/spissable/homebrew-tap.git tap
+          cd tap
+
+          sed -i "s|url \".*\"|url \"${TARBALL_URL}\"|" Formula/shlf.rb
+          sed -i "s|sha256 \".*\"|sha256 \"${SHA256}\"|" Formula/shlf.rb
+          sed -i "s|version \".*\"|version \"${VERSION}\"|" Formula/shlf.rb
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/shlf.rb
+          git commit -m "feat: update shlf to v${VERSION}"
+          git push
