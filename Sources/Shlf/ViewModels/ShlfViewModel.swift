@@ -1,6 +1,6 @@
 import Foundation
 import SwiftUI
-import QuickLookThumbnailing
+@preconcurrency import QuickLookThumbnailing
 
 protocol FileOperations: Sendable {
     func contentsOfDirectory(at url: URL, showHidden: Bool) -> [URL]
