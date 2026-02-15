@@ -1,5 +1,6 @@
 // swift-tools-version: 6.0
 
+import Foundation
 import PackageDescription
 
 let package = Package(
@@ -10,15 +11,28 @@ let package = Package(
     products: [
         .executable(name: "shlf", targets: ["Shlf"])
     ],
-    targets: [
-        .executableTarget(
-            name: "Shlf",
-            path: "Sources/Shlf"
-        ),
-        .testTarget(
-            name: "ShlfTests",
-            dependencies: ["Shlf"],
-            path: "Tests/ShlfTests"
-        )
-    ]
+    targets: {
+        var targets: [Target] = [
+            .executableTarget(
+                name: "Shlf",
+                path: "Sources/Shlf"
+            )
+        ]
+        #if swift(>=1) // Always true — allows file-system check at manifest evaluation time
+        let testsPath = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .appendingPathComponent("Tests/ShlfTests")
+            .path
+        if FileManager.default.fileExists(atPath: testsPath) {
+            targets.append(
+                .testTarget(
+                    name: "ShlfTests",
+                    dependencies: ["Shlf"],
+                    path: "Tests/ShlfTests"
+                )
+            )
+        }
+        #endif
+        return targets
+    }()
 )
