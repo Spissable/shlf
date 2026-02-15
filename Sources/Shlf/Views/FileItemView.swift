@@ -43,6 +43,9 @@ struct FileItemView: View {
                     }
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 6))
+            .onTapGesture(count: 2) {
+                NSWorkspace.shared.open(item.url)
+            }
             .onTapGesture {
                 if item.isVideo {
                     playing.toggle()

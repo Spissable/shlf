@@ -45,6 +45,7 @@ Sources/Shlf/
 - **Video playback**: Uses `AVPlayerLayer` directly (not `AVPlayerView`) for proper `videoGravity` control. `PlayerLayerView` overrides `intrinsicContentSize` to prevent layout blowout, and cleans up the player in `viewDidMoveToWindow()`.
 - **Thumbnails**: Async `QLThumbnailGenerator.generateBestRepresentation` (not the callback API, which crashes under Swift 6 `@MainActor` isolation).
 - **Inline rename**: Uses `CommitTextField` (NSViewRepresentable wrapping NSTextField) instead of SwiftUI `TextField` for reliable focus-loss detection in MenuBarExtra popovers. Editing state (`editingFileID`, `editName`) is owned by `ShlfPopover` and passed as bindings. The popover's `onChange(of: editingFileID)` commits the rename when editing ends.
+- **Open file**: Double-click a thumbnail to open the file with the default app (`NSWorkspace.shared.open`). The double-tap gesture is registered before the single-tap (video toggle) to avoid SwiftUI gesture conflicts.
 
 ### Gotchas
 
