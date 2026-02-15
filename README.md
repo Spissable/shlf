@@ -6,7 +6,16 @@ Shlf sits in your menu bar and shows a live grid of files from any folder you ch
 
 ![Shlf](assets/screenshot.png)
 
-## Install (Git)
+## Install
+
+### Homebrew
+
+```bash
+brew tap spissable/tap
+brew install shlf
+```
+
+### From source
 
 ```bash
 git clone https://github.com/spissable/shlf.git
