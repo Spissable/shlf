@@ -1,0 +1,7 @@
+assets/** export-ignore
+.github/** export-ignore
+.releaserc.json export-ignore
+.swiftlint.yml export-ignore
+CLAUDE.md export-ignore
+README.md export-ignore
+Tests/** export-ignore
