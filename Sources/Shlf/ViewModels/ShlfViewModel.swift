@@ -5,6 +5,7 @@ import SwiftUI
 protocol FileOperations: Sendable {
     func contentsOfDirectory(at url: URL, showHidden: Bool) -> [URL]
     func trashItem(at url: URL) throws
+    func moveItem(at srcURL: URL, to dstURL: URL) throws
 }
 
 struct DefaultFileOperations: FileOperations {
@@ -22,6 +23,10 @@ struct DefaultFileOperations: FileOperations {
 
     func trashItem(at url: URL) throws {
         try FileManager.default.trashItem(at: url, resultingItemURL: nil)
+    }
+
+    func moveItem(at srcURL: URL, to dstURL: URL) throws {
+        try FileManager.default.moveItem(at: srcURL, to: dstURL)
     }
 }
 
@@ -72,6 +77,24 @@ final class ShlfViewModel: ObservableObject {
             refresh()
         } catch {
             // Silently fail — file may already be gone
+        }
+    }
+
+    func renameFile(_ item: FileItem, to newName: String) -> Bool {
+        let trimmed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return false }
+
+        let directory = item.url.deletingLastPathComponent()
+        let destination = directory.appendingPathComponent(trimmed)
+
+        guard destination != item.url else { return true }
+
+        do {
+            try fileOps.moveItem(at: item.url, to: destination)
+            refresh()
+            return true
+        } catch {
+            return false
         }
     }
 

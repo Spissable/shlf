@@ -2,7 +2,7 @@
 
 A tiny macOS menu bar app that keeps your favourite folder close.
 
-Shlf sits in your menu bar and shows a live grid of files from any folder you choose. Thumbnails, file counts, one-click copy to clipboard, delete to Trash. Videos play inline.
+Shlf sits in your menu bar and shows a live grid of files from any folder you choose. Thumbnails, file counts, one-click copy to clipboard, delete to Trash, inline rename. Videos play inline.
 
 ![Shlf](assets/screenshot.png)
 
@@ -44,12 +44,13 @@ Restart Shlf after editing for changes to take effect.
 
 ## Usage
 
-| Action       | How                                   |
-| ------------ | ------------------------------------- |
-| Browse files | Click the menu bar icon               |
-| Copy file    | Click the copy icon on any cell       |
-| Delete file  | Click the trash icon (moves to Trash) |
-| Play video   | Click a video thumbnail               |
+| Action       | How                                           |
+| ------------ | --------------------------------------------- |
+| Browse files | Click the menu bar icon                       |
+| Copy file    | Click the copy icon on any cell               |
+| Delete file  | Click the trash icon (moves to Trash)         |
+| Rename file  | Double-click the filename, press Enter/Escape |
+| Play video   | Click a video thumbnail                       |
 
 ## License
 

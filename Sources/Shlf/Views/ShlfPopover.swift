@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ShlfPopover: View {
     @ObservedObject var viewModel: ShlfViewModel
+    @State private var editingFileID: URL?
+    @State private var editName = ""
 
     private let columns = [
         GridItem(.adaptive(minimum: 100), spacing: 6)
@@ -29,6 +31,18 @@ struct ShlfPopover: View {
             }
         }
         .frame(width: 360, height: 400)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            NSApp.keyWindow?.makeFirstResponder(nil)
+        }
+        .onChange(of: editingFileID) { oldID, newID in
+            if let oldID, let item = viewModel.files.first(where: { $0.id == oldID }) {
+                _ = viewModel.renameFile(item, to: editName)
+            }
+            if let newID, let item = viewModel.files.first(where: { $0.id == newID }) {
+                editName = item.filename
+            }
+        }
     }
 
     private var emptyState: some View {
@@ -51,7 +65,9 @@ struct ShlfPopover: View {
                         item: item,
                         thumbnail: viewModel.thumbnails[item.url],
                         onCopy: { viewModel.copyFile(item) },
-                        onDelete: { viewModel.deleteFile(item) }
+                        onDelete: { viewModel.deleteFile(item) },
+                        editingFileID: $editingFileID,
+                        editName: $editName
                     )
                 }
             }

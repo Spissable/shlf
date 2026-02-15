@@ -5,6 +5,10 @@ struct FileItemView: View {
     let thumbnail: NSImage?
     let onCopy: () -> Void
     let onDelete: () -> Void
+    @Binding var editingFileID: URL?
+    @Binding var editName: String
+
+    private var isEditing: Bool { editingFileID == item.id }
 
     @State private var playing = false
 
@@ -46,27 +50,43 @@ struct FileItemView: View {
             }
 
             HStack(spacing: 6) {
-                Text(item.filename)
-                    .font(.caption2)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                if isEditing {
+                    CommitTextField(
+                        text: $editName,
+                        onCommit: { editingFileID = nil },
+                        onCancel: {
+                            editName = item.filename
+                            editingFileID = nil
+                        }
+                    )
+                } else {
+                    Text(item.filename)
+                        .font(.caption2)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .onTapGesture(count: 2) {
+                            editingFileID = item.id
+                        }
+                }
 
-                HStack(spacing: 8) {
-                    Button(action: onCopy) {
-                        Image(systemName: "doc.on.doc")
-                            .font(.system(size: 9))
-                    }
-                    .buttonStyle(.borderless)
-                    .help("Copy to clipboard")
+                if !isEditing {
+                    HStack(spacing: 8) {
+                        Button(action: onCopy) {
+                            Image(systemName: "doc.on.doc")
+                                .font(.system(size: 9))
+                        }
+                        .buttonStyle(.borderless)
+                        .help("Copy to clipboard")
 
-                    Button(action: onDelete) {
-                        Image(systemName: "trash")
-                            .font(.system(size: 9))
-                            .foregroundStyle(.red)
+                        Button(action: onDelete) {
+                            Image(systemName: "trash")
+                                .font(.system(size: 9))
+                                .foregroundStyle(.red)
+                        }
+                        .buttonStyle(.borderless)
+                        .help("Move to Trash")
                     }
-                    .buttonStyle(.borderless)
-                    .help("Move to Trash")
                 }
             }
 
