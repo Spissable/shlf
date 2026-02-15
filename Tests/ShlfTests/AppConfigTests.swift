@@ -15,13 +15,13 @@ struct AppConfigTests {
 
     @Test("Config decodes from valid JSON")
     func decodesValidJSON() throws {
-        let json = """
+        let json = Data("""
         {
             "watchedFolder": "~/Downloads",
             "showHiddenFiles": true,
             "maxItems": 25
         }
-        """.data(using: .utf8)!
+        """.utf8)
 
         let config = try JSONDecoder().decode(AppConfig.self, from: json)
         #expect(config.watchedFolder == "~/Downloads")
@@ -39,7 +39,7 @@ struct AppConfigTests {
 
     @Test("Malformed JSON returns default on load")
     func malformedJSON() throws {
-        let json = "{ not valid json".data(using: .utf8)!
+        let json = Data("{ not valid json".utf8)
         let result = try? JSONDecoder().decode(AppConfig.self, from: json)
         #expect(result == nil)
     }

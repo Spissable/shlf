@@ -19,6 +19,6 @@ let package = Package(
             name: "ShlfTests",
             dependencies: ["Shlf"],
             path: "Tests/ShlfTests"
-        ),
+        )
     ]
 )

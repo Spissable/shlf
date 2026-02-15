@@ -18,7 +18,7 @@ struct FolderWatcherTests {
         watcher.start()
 
         let file = tempDir.appendingPathComponent("new.txt")
-        try "data".data(using: .utf8)!.write(to: file)
+        try Data("data".utf8).write(to: file)
 
         // Poll for change notification
         for _ in 0..<30 {
@@ -37,7 +37,7 @@ struct FolderWatcherTests {
         defer { try? FileManager.default.removeItem(at: tempDir) }
 
         let file = tempDir.appendingPathComponent("delete-me.txt")
-        try "data".data(using: .utf8)!.write(to: file)
+        try Data("data".utf8).write(to: file)
 
         let changed = LockedFlag()
         let watcher = FolderWatcher(folderURL: tempDir)

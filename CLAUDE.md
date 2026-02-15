@@ -7,8 +7,11 @@ macOS menu bar applet for quick access to a configurable folder.
 ```bash
 swift build
 swift test
+swiftlint --strict
 swift run
 ```
+
+Always run `swiftlint --strict` before committing. Zero violations must be maintained.
 
 Requires Xcode toolchain (Swift Testing framework is not in standalone CLT). Ensure `xcode-select -p` points to `/Applications/Xcode.app/Contents/Developer` — if not, run `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`.
 

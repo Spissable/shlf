@@ -122,7 +122,8 @@ final class ShlfViewModel: ObservableObject {
                     scale: 2.0,
                     representationTypes: .thumbnail
                 )
-                if let representation = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request) {
+                let generator = QLThumbnailGenerator.shared
+                if let representation = try? await generator.generateBestRepresentation(for: request) {
                     self?.thumbnails[url] = representation.nsImage
                 }
             }

@@ -9,6 +9,9 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v6
+      - uses: realm/SwiftLint@v0.63.2
+        with:
+          strict: true
       - run: swift build
       - run: swift test
 

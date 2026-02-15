@@ -54,8 +54,9 @@ struct CommitTextField: NSViewRepresentable {
             parent.text = field.stringValue
         }
 
-        func control(_ control: NSControl, textView: NSTextView,
-                      doCommandBy sel: Selector) -> Bool {
+        func control(_ control: NSControl,
+                     textView: NSTextView,
+                     doCommandBy sel: Selector) -> Bool {
             if sel == #selector(NSResponder.cancelOperation(_:)) {
                 cancelled = true
                 parent.onCancel()
