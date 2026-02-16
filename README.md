@@ -11,9 +11,10 @@ Shlf sits in your menu bar and shows a live grid of files from any folder you ch
 ### Homebrew
 
 ```bash
-brew tap spissable/tap
-brew install shlf
+brew install --cask spissable/tap/shlf
 ```
+
+This installs Shlf.app to `/Applications`. Launch it from Spotlight or the Applications folder.
 
 ### From source
 
@@ -26,7 +27,7 @@ cp .build/release/shlf /usr/local/bin/
 
 Then just run `shlf`. A folder icon appears in your menu bar.
 
-> Requires macOS 14 (Sonoma) or later and Xcode installed.
+> Building from source requires macOS 14 (Sonoma) or later and Xcode.
 
 ## Config
 
