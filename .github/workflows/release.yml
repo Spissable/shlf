@@ -31,8 +31,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  build-binary:
+    needs: [test, release]
+    if: needs.release.outputs.new_release_published == 'true'
+    runs-on: macos-15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - run: swift build -c release --arch arm64 --arch x86_64
+      - run: |
+          cp .build/apple/Products/Release/shlf shlf
+          tar czf shlf-macos.tar.gz shlf
+      - run: gh release upload "v${{ needs.release.outputs.new_release_version }}" shlf-macos.tar.gz
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   update-tap:
-    needs: release
+    needs: [release, build-binary]
     if: needs.release.outputs.new_release_published == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -41,7 +57,7 @@ jobs:
           TAP_GITHUB_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
           VERSION: ${{ needs.release.outputs.new_release_version }}
         run: |
-          TARBALL_URL="https://github.com/spissable/shlf/archive/refs/tags/v${VERSION}.tar.gz"
+          TARBALL_URL="https://github.com/spissable/shlf/releases/download/v${VERSION}/shlf-macos.tar.gz"
           SHA256=$(curl -sL "$TARBALL_URL" | shasum -a 256 | cut -d ' ' -f 1)
 
           git clone https://x-access-token:${TAP_GITHUB_TOKEN}@github.com/spissable/homebrew-tap.git tap
