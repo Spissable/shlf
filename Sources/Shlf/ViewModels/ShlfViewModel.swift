@@ -67,10 +67,6 @@ final class ShlfViewModel: ObservableObject {
         }
     }
 
-    func copyFile(_ item: FileItem) {
-        Clipboard.copyFile(at: item.url)
-    }
-
     func deleteFile(_ item: FileItem) {
         do {
             try fileOps.trashItem(at: item.url)

@@ -64,7 +64,6 @@ struct ShlfPopover: View {
                     FileItemView(
                         item: item,
                         thumbnail: viewModel.thumbnails[item.url],
-                        onCopy: { viewModel.copyFile(item) },
                         onDelete: { viewModel.deleteFile(item) },
                         editingFileID: $editingFileID,
                         editName: $editName

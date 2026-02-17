@@ -30,11 +30,9 @@ Sources/Shlf/
 │   └── ShlfViewModel.swift    # @MainActor ObservableObject: file list, thumbnails, actions
 ├── Views/
 │   ├── ShlfPopover.swift      # Scrollable grid of file thumbnails
-│   ├── FileItemView.swift     # Single cell: thumbnail/video, filename, copy/delete/rename
+│   ├── FileItemView.swift     # Single cell: thumbnail/video, filename, drag/delete/rename
 │   ├── CommitTextField.swift  # NSViewRepresentable: inline rename with native focus handling
 │   └── VideoPlayerView.swift  # NSViewRepresentable wrapping AVPlayerLayer
-└── Utilities/
-    └── Clipboard.swift        # NSPasteboard file copy
 ```
 
 ### Key patterns
@@ -45,6 +43,7 @@ Sources/Shlf/
 - **Video playback**: Uses `AVPlayerLayer` directly (not `AVPlayerView`) for proper `videoGravity` control. `PlayerLayerView` overrides `intrinsicContentSize` to prevent layout blowout, and cleans up the player in `viewDidMoveToWindow()`.
 - **Thumbnails**: Async `QLThumbnailGenerator.generateBestRepresentation` (not the callback API, which crashes under Swift 6 `@MainActor` isolation).
 - **Inline rename**: Uses `CommitTextField` (NSViewRepresentable wrapping NSTextField) instead of SwiftUI `TextField` for reliable focus-loss detection in MenuBarExtra popovers. Editing state (`editingFileID`, `editName`) is owned by `ShlfPopover` and passed as bindings. The popover's `onChange(of: editingFileID)` commits the rename when editing ends.
+- **Drag-and-drop**: File thumbnails are draggable via SwiftUI's `.draggable(item.url)` modifier. This enables dragging files directly from the popover into browser textareas (e.g. GitHub PR descriptions), Finder, or any other drop target. Shows a thumbnail preview while dragging.
 - **Open file**: Double-click a thumbnail to open the file with the default app (`NSWorkspace.shared.open`). The double-tap gesture is registered before the single-tap (video toggle) to avoid SwiftUI gesture conflicts.
 
 ### Gotchas

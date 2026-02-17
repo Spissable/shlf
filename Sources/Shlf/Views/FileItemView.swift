@@ -3,7 +3,6 @@ import SwiftUI
 struct FileItemView: View {
     let item: FileItem
     let thumbnail: NSImage?
-    let onCopy: () -> Void
     let onDelete: () -> Void
     @Binding var editingFileID: URL?
     @Binding var editName: String
@@ -43,6 +42,19 @@ struct FileItemView: View {
                     }
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 6))
+                .draggable(item.url) {
+                    if let thumbnail {
+                        Image(nsImage: thumbnail)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    } else {
+                        Image(systemName: "doc")
+                            .font(.system(size: 24))
+                            .frame(width: 60, height: 60)
+                    }
+                }
             .onTapGesture(count: 2) {
                 NSWorkspace.shared.open(item.url)
             }
@@ -74,22 +86,13 @@ struct FileItemView: View {
                 }
 
                 if !isEditing {
-                    HStack(spacing: 8) {
-                        Button(action: onCopy) {
-                            Image(systemName: "doc.on.doc")
-                                .font(.system(size: 9))
-                        }
-                        .buttonStyle(.borderless)
-                        .help("Copy to clipboard")
-
-                        Button(action: onDelete) {
-                            Image(systemName: "trash")
-                                .font(.system(size: 9))
-                                .foregroundStyle(.red)
-                        }
-                        .buttonStyle(.borderless)
-                        .help("Move to Trash")
+                    Button(action: onDelete) {
+                        Image(systemName: "trash")
+                            .font(.system(size: 9))
+                            .foregroundStyle(.red)
                     }
+                    .buttonStyle(.borderless)
+                    .help("Move to Trash")
                 }
             }
 
